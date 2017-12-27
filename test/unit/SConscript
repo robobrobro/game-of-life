@@ -1,0 +1,31 @@
+from SCons.Errors import StopError
+from subprocess import CalledProcessError, check_call
+
+Import('env')
+
+env.Append(LIBS=['unity'])
+
+def run_tests(env, target, source):
+    cmd = [source[0].path]
+    try:
+        check_call(cmd)
+    except CalledProcessError as ex:
+        raise StopError('Unit test(s) failed: {}'.format(ex))
+
+    with open(target[0].path, 'wb'):
+        pass
+
+target = 'unit-test-runner'
+source = (
+    'src/main.c',
+)
+
+test_runner = env.Program(target, source)
+
+env.Command(
+    target = 'tests-passed',
+    source = test_runner,
+    action = run_tests,
+)
+
+Return('')

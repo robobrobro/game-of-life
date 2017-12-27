@@ -1,0 +1,15 @@
+Import('env')
+
+# Build the unit tests
+unit_tests = SConscript(
+        dirs = 'unit',
+        variant_dir = env.subst('$BUILD_DIR/unit'),
+        duplicate = False,
+        exports = {'env': env.Clone()},
+)
+
+tests = (
+    unit_tests,
+)
+
+Return('tests')
