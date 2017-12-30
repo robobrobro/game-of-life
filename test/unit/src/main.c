@@ -7,7 +7,7 @@ int main(int argc, char **argv)
 
     UNITY_BEGIN();
 
-    /* TODO RUN_TEST(test_...); */
+    /* TODO RUN_TEST(test_failure_to_create_game); */
 
     return UNITY_END();
 }

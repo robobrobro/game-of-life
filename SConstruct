@@ -11,20 +11,35 @@ env = Environment(
         '-Wextra',
     ],
     CPPPATH = [
-        '#lib/unity/include',
-        '#lib/unity/src',
+        '#src',
+        '#src/$MODE',
     ],
     LIBPATH = ['$STAGING_DIR'],
 )
 
 debug_env = env.Clone(MODE='debug')
-debug_env.Append(
+debug_env.Append(CFLAGS=['-g'])
+
+test_env = env.Clone(MODE='test')
+test_env.Append(
     CFLAGS = ['--coverage'],
     LINKFLAGS = ['--coverage'],
+    CPPPATH = [
+        '#test/lib/unity/include',
+        '#test/lib/unity/src',
+    ],
 )
 
 release_env = env.Clone(MODE='release')
 # TODO add extra action to strip
+
+# Build the tests
+SConscript(
+    dirs = 'test',
+    variant_dir = test_env.subst('$BUILD_DIR/test'),
+    duplicate = False,
+    exports = {'env': test_env.Clone()},
+)
 
 for env in (debug_env, release_env):
     # Build the libraries
@@ -36,14 +51,6 @@ for env in (debug_env, release_env):
     )
 
     env.Install('$STAGING_DIR', libs)
-
-    # Build the tests
-    SConscript(
-        dirs = 'test',
-        variant_dir = debug_env.subst('$BUILD_DIR/test'),
-        duplicate = False,
-        exports = {'env': env.Clone()},
-    )
 
     # Build the objects
     objs = SConscript(

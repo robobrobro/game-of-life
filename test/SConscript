@@ -1,11 +1,21 @@
 Import('env')
 
+# Build the libraries
+libs = SConscript(
+    dirs = 'lib',
+    variant_dir = env.subst('$BUILD_DIR/lib'),
+    duplicate = False,
+    exports = {'env': env.Clone()},
+)
+    
+env.Install('$STAGING_DIR', libs)
+
 # Build the unit tests
 unit_tests = SConscript(
-        dirs = 'unit',
-        variant_dir = env.subst('$BUILD_DIR/unit'),
-        duplicate = False,
-        exports = {'env': env.Clone()},
+    dirs = 'unit',
+    variant_dir = env.subst('$BUILD_DIR/unit'),
+    duplicate = False,
+    exports = {'env': env.Clone()},
 )
 
 tests = (

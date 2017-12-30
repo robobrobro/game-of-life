@@ -1,11 +1,5 @@
 Import('env')
 
-# Build unity
-unity_lib = SConscript(
-    dirs = 'unity',
-    variant_dir = env.subst('$BUILD_DIR/unity'),
-    duplicate = False,
-    exports = {'env': env.Clone()},
-)
+# TODO no libs right now
 
-Return('unity_lib')
+Return('')
