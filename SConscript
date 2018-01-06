@@ -1,27 +1,19 @@
 Import('env')
 
-env.Append(
-    LIBS = [
-        'glfw3',
-        'yaml',
-    ],
-
-    LINKFLAGS = [
-        '-framework', 'Cocoa',
-        '-framework', 'CoreFoundation',
-        '-framework', 'CoreVideo',
-        '-framework', 'IOKit',
-        '-framework', 'OpenGL',
-    ],
+# Build the engine library
+engine = SConscript(
+    dirs = Dir('engine').srcnode(),
+    variant_dir = env.subst('$BUILD_DIR/engine'),
+    duplicate = False,
+    exports = {'env': env.Clone()},
 )
 
-target = 'game-of-life'
-source = (
-    'src/config.c',
-    'src/game.c',
-    'src/main.c',
+# Build the game
+game = SConscript(
+    dirs = Dir('game').srcnode(),
+    variant_dir = env.subst('$BUILD_DIR/game'),
+    duplicate = False,
+    exports = {'env': env.Clone()},
 )
 
-program = env.Program(target, source)
-
-Return('program')
+Return('engine game')

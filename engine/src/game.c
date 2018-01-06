@@ -12,6 +12,7 @@ struct game
 {
     int window_width;
     int window_height;
+    struct game_ops ops;
 };
 
 static int
@@ -36,11 +37,13 @@ parse_cfg_item(const char *key, const char *value, void *ctx)
 }
 
 struct game *
-game_new(const char *cfg_path)
+game_new(const char *cfg_path, const struct game_ops *ops)
 {
     struct game *g;
 
     assert(cfg_path != NULL);
+    assert(ops != NULL);
+
     if (!glfwInit()) {
         LOG_ERROR("failed to initialize GLFW");
         return NULL;
@@ -55,6 +58,9 @@ game_new(const char *cfg_path)
     *g = (typeof(*g)) {
         .window_width = 800,
         .window_height = 600,
+        .ops = {
+            .render = ops->render,
+        },
     };
 
     if (!config_parse(cfg_path, parse_cfg_item, g)) {
@@ -82,7 +88,8 @@ game_run(struct game *g)
     glfwMakeContextCurrent(window);
 
     while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT);
+        if (g->ops.render)
+            g->ops.render(g);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -97,4 +104,18 @@ game_free(struct game *g)
 
     assert(g != NULL);
     free(g);
+}
+
+int
+game_window_width(struct game *g)
+{
+    assert(g != NULL);
+    return g->window_width;
+}
+
+int
+game_window_height(struct game *g)
+{
+    assert(g != NULL);
+    return g->window_height;
 }

@@ -11,8 +11,7 @@ env = Environment(
         '-Wextra',
     ],
     CPPPATH = [
-        '#src',
-        '#src/$MODE',
+        '#engine/include',
     ],
     LIBPATH = ['$STAGING_DIR'],
 )

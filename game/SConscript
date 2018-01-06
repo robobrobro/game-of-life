@@ -1,0 +1,27 @@
+Import('env')
+
+env.Append(
+    LIBS = [
+        'engine',
+        'glfw3',
+        'yaml',
+    ],
+
+    LINKFLAGS = [
+        '-framework', 'Cocoa',
+        '-framework', 'CoreFoundation',
+        '-framework', 'CoreVideo',
+        '-framework', 'IOKit',
+        '-framework', 'OpenGL',
+    ],
+)
+
+
+target = 'game-of-life'
+source = (
+    'src/main.c',
+)
+
+program = env.Program(target, source)
+
+Return('program')

@@ -1,0 +1,18 @@
+Import('env')
+
+env.Append(
+    CPPPATH = [
+        'src',
+        'src/$MODE',
+    ],
+)
+
+target = 'engine'
+source = (
+    'src/config.c',
+    'src/game.c',
+)
+
+library = env.StaticLibrary(target, source)
+
+Return('library')
